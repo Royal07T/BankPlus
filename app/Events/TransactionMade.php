@@ -4,23 +4,21 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Transaction;
 
-class TransactionMade
+class TransactionMade implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use InteractsWithSockets, SerializesModels;
 
     public $transaction;
 
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param Transaction $transaction
      */
     public function __construct(Transaction $transaction)
     {
@@ -34,6 +32,6 @@ class TransactionMade
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('transactions.' . $this->transaction->id);
     }
 }
